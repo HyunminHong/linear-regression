@@ -15,50 +15,21 @@ e = np.random.normal(size=nsample)
 # _X = 1x3
 
 _X = np.array([[1, 1, 1], [2, 2, 2]])
-_X
-
 X = sm.add_constant(X)
 y = np.dot(X, beta) + e
 
-lm = OLS(X, y)
-lm.fit(method = "qr").predict(_X)
-lm.fit().r_squared_adj()
-lm.fit().r_squared()
-lm.r_squared()
+model1 = OLS()
+fitted_mod1 = model1.fit(X, y)
+fitted_mod1.beta
+fitted_mod1.predict(_X)
+fitted_mod1.rss()
+fitted_mod1.tss()
+fitted_mod1.r_squared()
+fitted_mod1.r_squared_adj()
 
-np.divide(lm.nob - lm.intercept, lm._dof_resid)
+# OLS from statsmodels.regression.linear_model
+model2 = sm.OLS(y, X)
+fitted_mod2 = model2.fit()
+fitted_mod2.predict(_X)
 
-1 - ((1 - lm.r_squared()) * np.divide(lm.nob - lm.intercept, lm.dof_resid()))
-
-(1 - lm.r_squared())
-
-lm.r_squared_adj()
-
-np.dot(X, lm.beta).shape
-
-np.dot(_X, lm.beta)
-
-model = sm.OLS(y, X)
-model.fit().summary()
-model.fit().rsquared()
-model.fit().predict(_X)
-
-y_easy = np.array([1, 0, 2])
-x_easy = np.array([0, 1, 2]).reshape(-1,1)
-lm_easy = OLS(x_easy, y_easy)
-lm_easy.fit(method = "conv")
-model_easy = sm.OLS(y_easy, x_easy)
-model_easy.fit(method="pinv").summary()
-
-np.dot(x_easy.T, x_easy) * beta = np.dot(x_easy.T, y_easy)
-
-beta = np.dot(x_easy.T, y_easy)/np.dot(x_easy.T, x_easy)
-beta
-
-X1 = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
-y1 = np.array([5, 20, 14, 32, 22, 38])
-lm1 = OLS(X1, y1)
-lm1.fit(method = "qr")
-model1 = sm.OLS(y1, X1)
-model1.fit(method="qr").summary()
-model1.k_constant
+np.dot(y, y)

@@ -6,16 +6,16 @@ class OLS:
     X: an exogenous variable is one whose value is determined outside the model and is imposed on the model
     y: an endogenous variable is a variable whose value is determined by the model
     """
-    def __init__(self, X, y, intercept = True):
-        self.X = X
-        self.y = y
+    def __init__(self, intercept = True):
+        self.X = None
+        self.y = None
         self.intercept = intercept # in default, the liear model contains an intercept term (as in practice)
         self.rank = None # rank of the design matrix X
         self._dof_model = None # model degrees of freedom 
         self._dof_resid = None # residual degrees of freedom
         self.beta = None # regression coefficients
         # TODO if X is a vector, then X.shape[1] does not exist. 
-        self.nob = self.X.shape[0] # number of observations
+        self.nob = None # number of observations
         self.y_pred = None # predicted value of y based on OLS estimate
         self.r_squared = None
         self.r_squared_adj = None
@@ -61,7 +61,7 @@ class OLS:
         self._dof_resid = value
         return self._dof_resid
 
-    def fit(self, method = "qr"):
+    def fit(self, X, y, method = "qr"):
         """
         Through the QR-decomposition of the X matrix, we can compute the least-squares coefficients. 
         X = Q * R where Q is an orthogonal matrix and R is an upper triangular matrix.
@@ -75,6 +75,10 @@ class OLS:
         Hence, we then have:
         R.T * R * beta = R.T * Q.T * y => R * beta = Q.T * y
         """
+        self.X = X
+        self.y = y
+        self.nob = X.shape[0]
+
         self.rank_exog()
         self.dof_model()
         self.dof_resid()
@@ -116,7 +120,8 @@ class OLS:
         resid.T * resid
         """
         resid = self.y - np.dot(self.X, self.beta)
-        return np.dot(resid.T, resid)
+        self.rss = np.dot(resid, resid)
+        return self.rss
 
     def tss(self):
         """
@@ -128,10 +133,12 @@ class OLS:
         """
         if self.intercept:
             y_centered = self.y - np.mean(self.y)
-            return np.dot(y_centered.T, y_centered)
+            self.tss = np.dot(y_centered, y_centered)
+            return self.tss
             
         else:
-            return np.dot(self.y, self.y)
+            self.tss = np.dot(self.y, self.y)
+            return self.tss
 
     def ess(self):
         """
@@ -141,6 +148,7 @@ class OLS:
 
         if it has no intercept, no need to center, i.e,. y_pred.T * y_pred
         """
+        self.ess = self.tss() - self.rss()
         return self.tss() - self.rss()
 
     #TODO
@@ -150,7 +158,7 @@ class OLS:
         * TSS = ESS + RSS 
         * Rsquared = 1 - RSS/TSS
         """
-        return 1 - self.rss/self.tss
+        return 1 - self.rss()/self.tss()
 
     #TODO
     def r_squared_adj(self):
@@ -159,14 +167,5 @@ class OLS:
 
         if no intercept is given, then no -1 term in denominator
         """
-        return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
+        return 1 - ((1 - self.r_squared()) * np.divide(self.nob - self.intercept, self._dof_resid))
 
-    def visualize(self):
-        pass
-
-lm = OLS(X, y)
-fitted_lm = lm.fit()
-fitted_lm.r_squared()
-1 - np.divide(fitted_lm.rss(), fitted_lm.tss())
-
-fitted_lm.rss()
