@@ -1,4 +1,4 @@
-from src import OLS
+from src.OLS import OLS
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import reshape
@@ -21,11 +21,14 @@ y = np.dot(X, beta) + e
 model1 = OLS()
 fitted_mod1 = model1.fit(X, y)
 fitted_mod1.beta
+fitted_mod1.X
+fitted_mod1.y
 fitted_mod1.predict(_X)
 fitted_mod1.rss()
+fitted_mod1.rss
 fitted_mod1.tss()
+fitted_mod1.tss
 fitted_mod1.r_squared()
-fitted_mod1.r_squared_adj()
 
 # OLS from statsmodels.regression.linear_model
 model2 = sm.OLS(y, X)
