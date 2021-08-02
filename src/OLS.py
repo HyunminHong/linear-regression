@@ -174,34 +174,3 @@ class OLS:
     #    self.tss()
     #    self.r_squared = 1 - self.rss/self.tss
     #    return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
-
-
-from numpy.core.fromnumeric import reshape
-import statsmodels.api as sm
-
-nsample = 100
-x = np.linspace(0, 10, 100)
-X = np.column_stack((x, x**2))
-beta = np.array([1, 0.1, 10])
-e = np.random.normal(size=nsample)
-
-# y_pred = X*beta 
-# beta = 3x1
-# _X = 1x3
-
-_X = np.array([[1, 1, 1], [2, 2, 2]])
-X = sm.add_constant(X)
-y = np.dot(X, beta) + e
-
-model1 = OLS()
-model1.beta
-fitted_mod1 = model1.fit(X, y)
-fitted_mod1.beta
-fitted_mod1.X
-fitted_mod1.y
-fitted_mod1.predict(_X)
-fitted_mod1.rss()
-fitted_mod1.rss
-fitted_mod1.tss()
-fitted_mod1.tss
-fitted_mod1.r_squared()
