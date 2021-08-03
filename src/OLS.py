@@ -1,15 +1,14 @@
+from src.LinearModel import LinearModel
 import numpy as np
 import matplotlib.pyplot as plt
 
-class OLS:
+class OLS(LinearModel):
     """
     X: an exogenous variable is one whose value is determined outside the model and is imposed on the model
     y: an endogenous variable is a variable whose value is determined by the model
     """
-    def __init__(self, intercept = True):
-        self.intercept = intercept # in default, the liear model contains an intercept term (as in practice)
-        self.X = None
-        self.y = None
+    def __init__(self, X = None, y = None, intercept = True):
+        super().__init__(X = None, y = None, intercept = True)
         self.rank = None # rank of the design matrix X
         self._dof_model = None # model degrees of freedom 
         self._dof_resid = None # residual degrees of freedom
@@ -19,46 +18,6 @@ class OLS:
         self.y_pred = None # predicted value of y based on OLS estimate
         self.r_squared = None
         self.r_squared_adj = None
-
-    def rank_exog(self):
-        """
-        return the rank of the exogenous matrix
-        """
-        if self.rank == None:
-            self.rank = np.linalg.matrix_rank(self.X)
-        return self.rank
-
-    def dof_model(self):
-        """
-        model degrees of freedom is defined by:
-
-        (rank of X) - 1
-        """
-        self._dof_model = self.rank_exog() - self.intercept
-        return self._dof_model
-
-    def set_dof_model(self, value):
-        """
-        setter function for the model degrees of freedom 
-        """
-        self._dof_model = value
-        return self._dof_model
-    
-    def dof_resid(self):
-        """
-        residual degrees of freedom is defined by:
-
-        # observations - (rank of X)
-        """
-        self._dof_resid = self.nob - self.rank_exog() - self.intercept
-        return self._dof_resid
-
-    def set_dof_resid(self, value):
-        """
-        setter function for the residual degrees of freedom 
-        """
-        self._dof_resid = value
-        return self._dof_resid
 
     def fit(self, X, y, method = "qr"):
         """
@@ -161,8 +120,8 @@ class OLS:
         self.rss_calc()
         self.tss_calc()
         if self.r_squared == None:
-            self.r_squared = 1 - self.rss/self.tss
-        return 1 - np.divide(self.rss, self.tss)
+            self.r_squared = 1 - np.divide(self.rss, self.tss)
+        return self.r_squared
 
     #TODO
     def rsquared_adj(self):
@@ -173,7 +132,7 @@ class OLS:
         """
         self.rss_calc()
         self.tss_calc()
-        self.r_squared = 1 - self.rss/self.tss
+        self.rsquared()
         return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
 
     def plot_regression(self, method = "PCA"):

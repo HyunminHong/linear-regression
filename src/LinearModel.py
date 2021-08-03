@@ -7,7 +7,8 @@ class LinearModel:
     def __init__(self, X = None, y = None, intercept = True):
         self.X = X
         self.y = y
-        
+        self.intercept = intercept
+
     def rank_exog(self):
         """
         return the rank of the exogenous matrix
