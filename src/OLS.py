@@ -28,14 +28,13 @@ class OLS:
             self.rank = np.linalg.matrix_rank(self.X)
         return self.rank
 
-    # TODO take care of a case when there is no intercept
     def dof_model(self):
         """
         model degrees of freedom is defined by:
 
         (rank of X) - 1
         """
-        self._dof_model = self.rank_exog() - 1
+        self._dof_model = self.rank_exog() - self.intercept
         return self._dof_model
 
     def set_dof_model(self, value):
@@ -75,8 +74,12 @@ class OLS:
         Hence, we then have:
         R.T * R * beta = R.T * Q.T * y => R * beta = Q.T * y
         """
-        self.X = X
-        self.y = y
+        if self.X == None:
+            self.X = X
+
+        if self.y == None:
+            self.y = y
+        
         self.nob = X.shape[0]
 
         self.rank_exog()
