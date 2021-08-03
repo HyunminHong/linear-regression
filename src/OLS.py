@@ -173,6 +173,15 @@ class OLS:
         self.r_squared = 1 - self.rss/self.tss
         return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
 
-    def visualize(self):
-        pass
+    def plot_regression(self, method = "PCA"):
+        if method == "PCA":
+            """
+            plot the regression line using PCA (dimension reduction)
+            """
+            pass
 
+        if method == "proj":
+            """
+            plot on projection
+            """
+            pass
