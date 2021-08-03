@@ -24,15 +24,18 @@ fitted_mod1.beta
 fitted_mod1.X
 fitted_mod1.y
 fitted_mod1.predict(_X)
-fitted_mod1.rss()
+fitted_mod1.rss_calc()
 fitted_mod1.rss
 fitted_mod1.tss()
-fitted_mod1.tss
+fitted_mod1.tss 
+fitted_mod1.ess()
+fitted_mod1.ess
 fitted_mod1.r_squared()
 
 # OLS from statsmodels.regression.linear_model
 model2 = sm.OLS(y, X)
 fitted_mod2 = model2.fit()
 fitted_mod2.predict(_X)
+fitted_mod2.summary()
 
 np.dot(y, y)

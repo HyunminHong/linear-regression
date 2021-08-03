@@ -1,5 +1,5 @@
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 class OLS:
     """
@@ -113,7 +113,7 @@ class OLS:
         self.y_pred = np.dot(X_test, self.beta)
         return self.y_pred
 
-    def rss(self):
+    def rss_calc(self):
         """
         residual sum of errors (RSS). (it is equivalent to SSR in Hayashi)
 
@@ -122,7 +122,7 @@ class OLS:
         resid = self.y - np.dot(self.X, self.beta)
         self.rss = np.dot(resid, resid)
 
-    def tss(self):
+    def tss_calc(self):
         """
         total sum of squares (TSS).
 
@@ -137,7 +137,7 @@ class OLS:
         else:
             self.tss = np.dot(self.y, self.y)
 
-    def ess(self):
+    def ess_calc(self):
         """
         explained sum of squares (ESS).
 
@@ -145,32 +145,34 @@ class OLS:
 
         if it has no intercept, no need to center, i.e,. y_pred.T * y_pred
         """
-        self.rss()
-        self.tss()
+        self.rss_calc()
+        self.tss_calc()
         self.ess = self.tss - self.rss
 
-    #TODO
-    def r_squared(self):
+    def rsquared(self):
         """
         Note that: 
         * TSS = ESS + RSS 
         * Rsquared = 1 - RSS/TSS
         """
-        self.rss()
-        self.tss()
-        assert self.rss() is not None
-        assert self.tss() is not None
-        self.r_squared = 1 - self.rss/self.tss
-        return self.r_squared
+        self.rss_calc()
+        self.tss_calc()
+        if self.r_squared == None:
+            self.r_squared = 1 - self.rss/self.tss
+        return 1 - np.divide(self.rss, self.tss)
 
     #TODO
-    #def r_squared_adj(self):
+    def rsquared_adj(self):
         """
         adjusted Rsquared = 1 - (1 - Rsquared)*(N - 1)/(N - p - 1)
 
         if no intercept is given, then no -1 term in denominator
         """
-    #    self.rss()
-    #    self.tss()
-    #    self.r_squared = 1 - self.rss/self.tss
-    #    return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
+        self.rss_calc()
+        self.tss_calc()
+        self.r_squared = 1 - self.rss/self.tss
+        return 1 - ((1 - self.r_squared) * np.divide(self.nob - self.intercept, self._dof_resid))
+
+    def visualize(self):
+        pass
+
