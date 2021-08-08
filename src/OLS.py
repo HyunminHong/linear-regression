@@ -139,6 +139,8 @@ class OLS(LinearModel):
         if method == "PCA":
             """
             plot the regression line using PCA (dimension reduction)
+
+            TODO can we do PCA without using Scikit learn? 
             """
             pass
 
